@@ -1,3 +1,3 @@
-module github.com/mmcomp/golang-backend-training
+module github.com/mmcomp/go_log
 
 go 1.12
