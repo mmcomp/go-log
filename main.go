@@ -3,6 +3,7 @@ package go_log
 import (
 	"fmt"
 	"io"
+	"os"
 )
 
 type Logger struct {
@@ -22,4 +23,13 @@ func (receiver Logger) Begin(a ...interface{}) {
 
 func (receiver Logger) End(a ...interface{}) {
 	receiver.Log("END")
+}
+
+func Log(a ...interface{}) {
+	log := Logger{
+		OutputText: true,
+		Output:     os.Stdout,
+	}
+
+	log.Log(a...)
 }
