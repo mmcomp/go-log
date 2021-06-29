@@ -1,4 +1,4 @@
-package go_log
+package log
 
 import (
 	"fmt"
@@ -7,14 +7,25 @@ import (
 )
 
 type Logger struct {
-	OutputText bool
-	Output     io.Writer
+	Output io.Writer
+}
+
+var Default Logger = Logger{
+	Output: os.Stdout,
 }
 
 func (receiver Logger) Log(a ...interface{}) {
-	if receiver.OutputText {
-		fmt.Fprintln(receiver.Output, a...)
+	if receiver.Output == nil {
+		return
 	}
+	fmt.Fprintln(receiver.Output, a...)
+}
+
+func (receiver Logger) Logf(format string, a ...interface{}) {
+	if receiver.Output == nil {
+		return
+	}
+	fmt.Fprintf(receiver.Output, format, a...)
 }
 
 func (receiver Logger) Begin(a ...interface{}) {
@@ -26,10 +37,9 @@ func (receiver Logger) End(a ...interface{}) {
 }
 
 func Log(a ...interface{}) {
-	log := Logger{
-		OutputText: true,
-		Output:     os.Stdout,
-	}
+	Default.Log(a...)
+}
 
-	log.Log(a...)
+func Logf(format string, a ...interface{}) {
+	Default.Logf(format, a...)
 }
