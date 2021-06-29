@@ -1,3 +1,3 @@
-module github.com/mmcomp/go_log
+module github.com/mmcomp/go-log
 
 go 1.12
