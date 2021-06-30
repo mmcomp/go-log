@@ -28,3 +28,14 @@ func TestLogger_Logf(t *testing.T) {
 		t.Errorf("`testf` was expected but got %q", out)
 	}
 }
+
+func TestLogger_Prefix_Log(t *testing.T) {
+	var b bytes.Buffer
+	logger := Default.Prefix("Pr1", "Pr2")
+	logger.Output = &b
+	logger.Log("test")
+	out := b.String()
+	if out != "Pr1: Pr2: test\n" {
+		t.Errorf("`Pr1: Pr2: test` was expected but got %q", out)
+	}
+}
