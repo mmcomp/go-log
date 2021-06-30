@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"runtime"
 	"strings"
 )
 
@@ -31,6 +32,40 @@ func (receiver Logger) Log(a ...interface{}) {
 func (receiver Logger) Logf(format string, a ...interface{}) {
 	if receiver.Output == nil {
 		return
+	}
+	if receiver.Prfx != nil {
+		fmt.Fprintf(receiver.Output, strings.Join(receiver.Prfx[:], ": "))
+		fmt.Fprintf(receiver.Output, ": ")
+	}
+	fmt.Fprintf(receiver.Output, format, a...)
+}
+
+func (receiver Logger) LogWithFuncName(a ...interface{}) {
+	if receiver.Output == nil {
+		return
+	}
+	pc, _, _, ok := runtime.Caller(0)
+	if ok {
+		fnc := runtime.FuncForPC(pc)
+		functionName := fnc.Name()
+		fmt.Fprintf(receiver.Output, "%s: ", functionName)
+	}
+	if receiver.Prfx != nil {
+		fmt.Fprintf(receiver.Output, strings.Join(receiver.Prfx[:], ": "))
+		fmt.Fprintf(receiver.Output, ": ")
+	}
+	fmt.Fprintln(receiver.Output, a...)
+}
+
+func (receiver Logger) LogfWithFuncName(format string, a ...interface{}) {
+	if receiver.Output == nil {
+		return
+	}
+	pc, _, _, ok := runtime.Caller(0)
+	if ok {
+		fnc := runtime.FuncForPC(pc)
+		functionName := fnc.Name()
+		fmt.Fprintf(receiver.Output, "%s: ", functionName)
 	}
 	if receiver.Prfx != nil {
 		fmt.Fprintf(receiver.Output, strings.Join(receiver.Prfx[:], ": "))
