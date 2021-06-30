@@ -5,7 +5,7 @@ import (
 	"testing"
 )
 
-func TestLog(t *testing.T) {
+func TestLogger_Log(t *testing.T) {
 	var b bytes.Buffer
 	logger := Logger{
 		Output: &b,
@@ -17,7 +17,7 @@ func TestLog(t *testing.T) {
 	}
 }
 
-func TestLogf(t *testing.T) {
+func TestLogger_Logf(t *testing.T) {
 	var b bytes.Buffer
 	logger := Logger{
 		Output: &b,
