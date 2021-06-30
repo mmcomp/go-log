@@ -22,9 +22,9 @@ func TestLogger_Logf(t *testing.T) {
 	logger := Logger{
 		Output: &b,
 	}
-	logger.Logf("%s", "testf")
+	logger.Logf("%s", "testf\n")
 	out := b.String()
-	if out != "testf" {
+	if out != "testf\n" {
 		t.Errorf("`testf` was expected but got %q", out)
 	}
 }
