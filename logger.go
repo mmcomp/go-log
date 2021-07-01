@@ -44,7 +44,7 @@ func (receiver Logger) LogWithFuncName(a ...interface{}) {
 	if receiver.Output == nil {
 		return
 	}
-	pc, _, _, ok := runtime.Caller(0)
+	pc, _, _, ok := runtime.Caller(1)
 	if ok {
 		fnc := runtime.FuncForPC(pc)
 		functionName := fnc.Name()
@@ -61,7 +61,7 @@ func (receiver Logger) LogfWithFuncName(format string, a ...interface{}) {
 	if receiver.Output == nil {
 		return
 	}
-	pc, _, _, ok := runtime.Caller(0)
+	pc, _, _, ok := runtime.Caller(1)
 	if ok {
 		fnc := runtime.FuncForPC(pc)
 		functionName := fnc.Name()

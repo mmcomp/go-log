@@ -10,10 +10,34 @@ func TestLogger_Log(t *testing.T) {
 	logger := Logger{
 		Output: &b,
 	}
-	logger.Log("test")
-	out := b.String()
-	if out != "test\n" {
-		t.Errorf("`test` was expected but got %q", out)
+
+	tests := []struct {
+		Input    []interface{}
+		Excepted string
+	}{
+		{
+			Input:    []interface{}{"test"},
+			Excepted: "[test]\n",
+		},
+
+		{
+			Input:    []interface{}{"sometimes", "it", "is", "best", "to", "listen"},
+			Excepted: "[sometimes it is best to listen]\n",
+		},
+
+		{
+			Input:    []interface{}{"Hello", "!!"},
+			Excepted: "[Hello !!]\n",
+		},
+	}
+
+	for testNumber, test := range tests {
+		logger.Log(test.Input)
+		out := b.String()
+		if out != test.Excepted {
+			t.Errorf("Test %d :  %q was expected but got %q", testNumber, test.Excepted, out)
+		}
+		b.Reset()
 	}
 }
 
@@ -22,55 +46,168 @@ func TestLogger_Logf(t *testing.T) {
 	logger := Logger{
 		Output: &b,
 	}
-	logger.Logf("%s", "testf\n")
-	out := b.String()
-	if out != "testf\n" {
-		t.Errorf("`testf` was expected but got %q", out)
+
+	tests := []struct {
+		Input    []interface{}
+		Excepted string
+	}{
+		{
+			Input:    []interface{}{"test\n"},
+			Excepted: "[test\n]",
+		},
+
+		{
+			Input:    []interface{}{"sometimes", "it", "is", "best", "to", "listen\n"},
+			Excepted: "[sometimes it is best to listen\n]",
+		},
+
+		{
+			Input:    []interface{}{"Hello", "!!\n"},
+			Excepted: "[Hello !!\n]",
+		},
+	}
+
+	for testNumber, test := range tests {
+		logger.Logf("%s", test.Input)
+		out := b.String()
+		if out != test.Excepted {
+			t.Errorf("Test %d :  %q was expected but got %q", testNumber, test.Excepted, out)
+		}
+		b.Reset()
 	}
 }
 
 func TestLogger_Prefix_Log(t *testing.T) {
 	var b bytes.Buffer
-	logger := Default.Prefix("Pr1", "Pr2")
-	logger.Output = &b
-	logger.Log("test")
-	out := b.String()
-	if out != "Pr1: Pr2: test\n" {
-		t.Errorf("`Pr1: Pr2: test` was expected but got %q", out)
+	tests := []struct {
+		Input    []interface{}
+		Excepted string
+		Prefixes []string
+	}{
+		{
+			Input:    []interface{}{"test\n"},
+			Excepted: "Pr1: Pr2: [test\n]\n",
+			Prefixes: []string{"Pr1", "Pr2"},
+		},
+
+		{
+			Input:    []interface{}{"The", "test\n"},
+			Excepted: "Pr1: [The test\n]\n",
+			Prefixes: []string{"Pr1"},
+		},
+
+		{
+			Input:    []interface{}{"sometimes", "it", "is", "best", "to", "listen\n"},
+			Excepted: "Pr1: Pr2: [sometimes it is best to listen\n]\n",
+			Prefixes: []string{"Pr1", "Pr2"},
+		},
+
+		{
+			Input:    []interface{}{"Hello", "!!\n"},
+			Excepted: "Pr1: [Hello !!\n]\n",
+			Prefixes: []string{"Pr1"},
+		},
+	}
+
+	for testNumber, test := range tests {
+		logger := Default.Prefix(test.Prefixes...)
+		logger.Output = &b
+		logger.Log(test.Input)
+		out := b.String()
+		if out != test.Excepted {
+			t.Errorf("Test %d :  %q was expected but got %q", testNumber, test.Excepted, out)
+		}
+		b.Reset()
 	}
 }
 
 func TestLogger_Prefix_Logf(t *testing.T) {
 	var b bytes.Buffer
-	logger := Default.Prefix("Pr1", "Pr2")
-	logger.Output = &b
-	logger.Logf("%s", "testf\n")
-	out := b.String()
-	if out != "Pr1: Pr2: testf\n" {
-		t.Errorf("`Pr1: Pr2: testf` was expected but got %q", out)
+	tests := []struct {
+		Input    []interface{}
+		Excepted string
+		Prefixes []string
+	}{
+		{
+			Input:    []interface{}{"test\n"},
+			Excepted: "Pr1: Pr2: [test\n]",
+			Prefixes: []string{"Pr1", "Pr2"},
+		},
+
+		{
+			Input:    []interface{}{"The", "test\n"},
+			Excepted: "Pr1: [The test\n]",
+			Prefixes: []string{"Pr1"},
+		},
+
+		{
+			Input:    []interface{}{"sometimes", "it", "is", "best", "to", "listen\n"},
+			Excepted: "Pr1: Pr2: [sometimes it is best to listen\n]",
+			Prefixes: []string{"Pr1", "Pr2"},
+		},
+
+		{
+			Input:    []interface{}{"Hello", "!!\n"},
+			Excepted: "Pr1: [Hello !!\n]",
+			Prefixes: []string{"Pr1"},
+		},
+	}
+	for testNumber, test := range tests {
+		logger := Default.Prefix(test.Prefixes...)
+		logger.Output = &b
+		logger.Logf("%s", test.Input)
+		out := b.String()
+		if out != test.Excepted {
+			t.Errorf("Test %d :  %q was expected but got %q", testNumber, test.Excepted, out)
+		}
+		b.Reset()
 	}
 }
 
-func TestLogger_FuncName(t *testing.T) {
+func TestLogger_FuncNameOne(t *testing.T) {
 	var b bytes.Buffer
 	logger := Logger{
 		Output: &b,
 	}
 	logger.LogWithFuncName("test")
 	out := b.String()
-	if out != "github.com/mmcomp/go-log.Logger.LogWithFuncName: test\n" {
-		t.Errorf("`test` was expected but got %q", out)
+	if out != "github.com/mmcomp/go-log.TestLogger_FuncNameOne: test\n" {
+		t.Errorf("`github.com/mmcomp/go-log.TestLogger_FuncNameOne: test\n` was expected but got %q", out)
 	}
 }
 
-func TestLogger_fFuncName(t *testing.T) {
+func TestLogger_FuncNameTwo(t *testing.T) {
+	var b bytes.Buffer
+	logger := Logger{
+		Output: &b,
+	}
+	logger.LogWithFuncName("test")
+	out := b.String()
+	if out != "github.com/mmcomp/go-log.TestLogger_FuncNameTwo: test\n" {
+		t.Errorf("`github.com/mmcomp/go-log.TestLogger_FuncNameTwo: test\n` was expected but got %q", out)
+	}
+}
+
+func TestLogger_fFuncNameOne(t *testing.T) {
 	var b bytes.Buffer
 	logger := Logger{
 		Output: &b,
 	}
 	logger.LogfWithFuncName("%s\n", "test")
 	out := b.String()
-	if out != "github.com/mmcomp/go-log.Logger.LogfWithFuncName: test\n" {
-		t.Errorf("`test` was expected but got %q", out)
+	if out != "github.com/mmcomp/go-log.TestLogger_fFuncNameOne: test\n" {
+		t.Errorf("`github.com/mmcomp/go-log.TestLogger_fFuncNameOne: test\n` was expected but got %q", out)
+	}
+}
+
+func TestLogger_fFuncNameTwo(t *testing.T) {
+	var b bytes.Buffer
+	logger := Logger{
+		Output: &b,
+	}
+	logger.LogfWithFuncName("%s\n", "test")
+	out := b.String()
+	if out != "github.com/mmcomp/go-log.TestLogger_fFuncNameTwo: test\n" {
+		t.Errorf("`github.com/mmcomp/go-log.TestLogger_fFuncNameTwo: test\n` was expected but got %q", out)
 	}
 }
