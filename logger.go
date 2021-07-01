@@ -100,6 +100,54 @@ func Log(a ...interface{}) {
 	Default.Log(a...)
 }
 
+func Alert(a ...interface{}) {
+	Default.Log(a...)
+}
+
+func Error(a ...interface{}) {
+	Default.Log(a...)
+}
+
+func Highlight(a ...interface{}) {
+	Default.Log(a...)
+}
+
+func Inform(a ...interface{}) {
+	Default.Log(a...)
+}
+
+func Trace(a ...interface{}) {
+	Default.Log(a...)
+}
+
+func Warn(a ...interface{}) {
+	Default.Log(a...)
+}
+
 func Logf(format string, a ...interface{}) {
+	Default.Logf(format, a...)
+}
+
+func Alertf(format string, a ...interface{}) {
+	Default.Logf(format, a...)
+}
+
+func Errorf(format string, a ...interface{}) {
+	Default.Logf(format, a...)
+}
+
+func Highlightf(format string, a ...interface{}) {
+	Default.Logf(format, a...)
+}
+
+func Informf(format string, a ...interface{}) {
+	Default.Logf(format, a...)
+}
+
+func Tracef(format string, a ...interface{}) {
+	Default.Logf(format, a...)
+}
+
+func Warnf(format string, a ...interface{}) {
 	Default.Logf(format, a...)
 }
