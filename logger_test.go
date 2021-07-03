@@ -17,22 +17,22 @@ func TestLogger_Log(t *testing.T) {
 	}{
 		{
 			Input:    []interface{}{"test"},
-			Excepted: "[test]\n",
+			Excepted: "test\n",
 		},
 
 		{
 			Input:    []interface{}{"sometimes", "it", "is", "best", "to", "listen"},
-			Excepted: "[sometimes it is best to listen]\n",
+			Excepted: "sometimes it is best to listen\n",
 		},
 
 		{
 			Input:    []interface{}{"Hello", "!!"},
-			Excepted: "[Hello !!]\n",
+			Excepted: "Hello !!\n",
 		},
 	}
 
 	for testNumber, test := range tests {
-		logger.Log(test.Input)
+		logger.Log(test.Input...)
 		out := b.String()
 		if out != test.Excepted {
 			t.Errorf("Test %d :  %q was expected but got %q", testNumber, test.Excepted, out)
@@ -50,25 +50,29 @@ func TestLogger_Logf(t *testing.T) {
 	tests := []struct {
 		Input    []interface{}
 		Excepted string
+		Format string
 	}{
 		{
-			Input:    []interface{}{"test\n"},
-			Excepted: "[test\n]",
+			Input:    []interface{}{"test"},
+			Excepted: "test\n",
+			Format: "%s",
 		},
 
 		{
-			Input:    []interface{}{"sometimes", "it", "is", "best", "to", "listen\n"},
-			Excepted: "[sometimes it is best to listen\n]",
+			Input:    []interface{}{"sometimes", "it", "is", "best", "to", "listen"},
+			Excepted: "sometimes it is best to listen\n",
+			Format:  "%s %s %s %s %s %s",
 		},
 
 		{
-			Input:    []interface{}{"Hello", "!!\n"},
-			Excepted: "[Hello !!\n]",
+			Input:    []interface{}{"Hello", "!!"},
+			Excepted: "Hello !!\n",
+			Format: "%s %s",
 		},
 	}
 
 	for testNumber, test := range tests {
-		logger.Logf("%s", test.Input)
+		logger.Logf(test.Format, test.Input...)
 		out := b.String()
 		if out != test.Excepted {
 			t.Errorf("Test %d :  %q was expected but got %q", testNumber, test.Excepted, out)
@@ -85,26 +89,26 @@ func TestLogger_Prefix_Log(t *testing.T) {
 		Prefixes []string
 	}{
 		{
-			Input:    []interface{}{"test\n"},
-			Excepted: "Pr1: Pr2: [test\n]\n",
+			Input:    []interface{}{"test"},
+			Excepted: "Pr1: Pr2: test\n",
 			Prefixes: []string{"Pr1", "Pr2"},
 		},
 
 		{
-			Input:    []interface{}{"The", "test\n"},
-			Excepted: "Pr1: [The test\n]\n",
+			Input:    []interface{}{"The", "test"},
+			Excepted: "Pr1: The test\n",
 			Prefixes: []string{"Pr1"},
 		},
 
 		{
-			Input:    []interface{}{"sometimes", "it", "is", "best", "to", "listen\n"},
-			Excepted: "Pr1: Pr2: [sometimes it is best to listen\n]\n",
+			Input:    []interface{}{"sometimes", "it", "is", "best", "to", "listen"},
+			Excepted: "Pr1: Pr2: sometimes it is best to listen\n",
 			Prefixes: []string{"Pr1", "Pr2"},
 		},
 
 		{
-			Input:    []interface{}{"Hello", "!!\n"},
-			Excepted: "Pr1: [Hello !!\n]\n",
+			Input:    []interface{}{"Hello", "!!"},
+			Excepted: "Pr1: Hello !!\n",
 			Prefixes: []string{"Pr1"},
 		},
 	}
@@ -112,7 +116,7 @@ func TestLogger_Prefix_Log(t *testing.T) {
 	for testNumber, test := range tests {
 		logger := Default.Prefix(test.Prefixes...)
 		logger.Output = &b
-		logger.Log(test.Input)
+		logger.Log(test.Input...)
 		out := b.String()
 		if out != test.Excepted {
 			t.Errorf("Test %d :  %q was expected but got %q", testNumber, test.Excepted, out)
@@ -127,35 +131,40 @@ func TestLogger_Prefix_Logf(t *testing.T) {
 		Input    []interface{}
 		Excepted string
 		Prefixes []string
+		Format string
 	}{
 		{
-			Input:    []interface{}{"test\n"},
-			Excepted: "Pr1: Pr2: [test\n]",
+			Input:    []interface{}{"test"},
+			Excepted: "Pr1: Pr2: test\n",
 			Prefixes: []string{"Pr1", "Pr2"},
+			Format: "%s",
 		},
 
 		{
-			Input:    []interface{}{"The", "test\n"},
-			Excepted: "Pr1: [The test\n]",
+			Input:    []interface{}{"The", "test"},
+			Excepted: "Pr1: The test\n",
 			Prefixes: []string{"Pr1"},
+			Format: "%s %s",
 		},
 
 		{
-			Input:    []interface{}{"sometimes", "it", "is", "best", "to", "listen\n"},
-			Excepted: "Pr1: Pr2: [sometimes it is best to listen\n]",
+			Input:    []interface{}{"sometimes", "it", "is", "best", "to", "listen"},
+			Excepted: "Pr1: Pr2: sometimes it is best to listen\n",
 			Prefixes: []string{"Pr1", "Pr2"},
+			Format:  "%s %s %s %s %s %s",
 		},
 
 		{
-			Input:    []interface{}{"Hello", "!!\n"},
-			Excepted: "Pr1: [Hello !!\n]",
+			Input:    []interface{}{"Hello", "!!"},
+			Excepted: "Pr1: Hello !!\n",
 			Prefixes: []string{"Pr1"},
+			Format: "%s %s",
 		},
 	}
 	for testNumber, test := range tests {
 		logger := Default.Prefix(test.Prefixes...)
 		logger.Output = &b
-		logger.Logf("%s", test.Input)
+		logger.Logf(test.Format, test.Input...)
 		out := b.String()
 		if out != test.Excepted {
 			t.Errorf("Test %d :  %q was expected but got %q", testNumber, test.Excepted, out)

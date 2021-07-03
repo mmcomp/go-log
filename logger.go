@@ -41,6 +41,7 @@ func (receiver Logger) Logf(format string, a ...interface{}) {
 		fmt.Fprint(receiver.Output, strings.Join(receiver.Prfx[:], ": "))
 		fmt.Fprintf(receiver.Output, ": ")
 	}
+	format = format + "\n"
 	fmt.Fprintf(receiver.Output, format, a...)
 }
 
