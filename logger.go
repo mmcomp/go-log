@@ -152,3 +152,11 @@ func Tracef(format string, a ...interface{}) {
 func Warnf(format string, a ...interface{}) {
 	Default.Logf(format, a...)
 }
+
+func Begin(a ...interface{}) {
+	Default.Begin(a...)
+}
+
+func End(a ...interface{}) {
+	Default.End(a...)
+}
