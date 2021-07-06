@@ -50,24 +50,24 @@ func TestLogger_Logf(t *testing.T) {
 	tests := []struct {
 		Input    []interface{}
 		Excepted string
-		Format string
+		Format   string
 	}{
 		{
 			Input:    []interface{}{"test"},
 			Excepted: "test\n",
-			Format: "%s",
+			Format:   "%s",
 		},
 
 		{
 			Input:    []interface{}{"sometimes", "it", "is", "best", "to", "listen"},
 			Excepted: "sometimes it is best to listen\n",
-			Format:  "%s %s %s %s %s %s",
+			Format:   "%s %s %s %s %s %s",
 		},
 
 		{
 			Input:    []interface{}{"Hello", "!!"},
 			Excepted: "Hello !!\n",
-			Format: "%s %s",
+			Format:   "%s %s",
 		},
 	}
 
@@ -131,34 +131,34 @@ func TestLogger_Prefix_Logf(t *testing.T) {
 		Input    []interface{}
 		Excepted string
 		Prefixes []string
-		Format string
+		Format   string
 	}{
 		{
 			Input:    []interface{}{"test"},
 			Excepted: "Pr1: Pr2: test\n",
 			Prefixes: []string{"Pr1", "Pr2"},
-			Format: "%s",
+			Format:   "%s",
 		},
 
 		{
 			Input:    []interface{}{"The", "test"},
 			Excepted: "Pr1: The test\n",
 			Prefixes: []string{"Pr1"},
-			Format: "%s %s",
+			Format:   "%s %s",
 		},
 
 		{
 			Input:    []interface{}{"sometimes", "it", "is", "best", "to", "listen"},
 			Excepted: "Pr1: Pr2: sometimes it is best to listen\n",
 			Prefixes: []string{"Pr1", "Pr2"},
-			Format:  "%s %s %s %s %s %s",
+			Format:   "%s %s %s %s %s %s",
 		},
 
 		{
 			Input:    []interface{}{"Hello", "!!"},
 			Excepted: "Pr1: Hello !!\n",
 			Prefixes: []string{"Pr1"},
-			Format: "%s %s",
+			Format:   "%s %s",
 		},
 	}
 	for testNumber, test := range tests {
@@ -218,5 +218,41 @@ func TestLogger_fFuncNameTwo(t *testing.T) {
 	out := b.String()
 	if out != "github.com/mmcomp/go-log.TestLogger_fFuncNameTwo: test\n" {
 		t.Errorf("`github.com/mmcomp/go-log.TestLogger_fFuncNameTwo: test\n` was expected but got %q", out)
+	}
+}
+
+func TestLogger_Output(t *testing.T) {
+	var b bytes.Buffer
+	logger := Logger{
+		Output: &b,
+	}
+
+	tests := []struct {
+		Input    []interface{}
+		Excepted string
+	}{
+		{
+			Input:    []interface{}{"test"},
+			Excepted: "github.com/mmcomp/go-log.TestLogger_Output test\n",
+		},
+
+		{
+			Input:    []interface{}{"sometimes", "it", "is", "best", "to", "listen"},
+			Excepted: "github.com/mmcomp/go-log.TestLogger_Output sometimes it is best to listen\n",
+		},
+
+		{
+			Input:    []interface{}{"Hello", "!!"},
+			Excepted: "github.com/mmcomp/go-log.TestLogger_Output Hello !!\n",
+		},
+	}
+
+	for testNumber, test := range tests {
+		logger.output(test.Input...)
+		out := b.String()
+		if out != test.Excepted {
+			t.Errorf("Test %d :  %q was expected but got %q", testNumber, test.Excepted, out)
+		}
+		b.Reset()
 	}
 }

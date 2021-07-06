@@ -97,6 +97,19 @@ func (receiver Logger) Prefix(newprefix ...string) Logger {
 	return logger
 }
 
+func (receiver Logger) output(a ...interface{}) {
+	var functionName string = ""
+	{
+		pc, _, _, ok := runtime.Caller(1)
+		if ok {
+			fnc := runtime.FuncForPC(pc)
+			functionName = fnc.Name()
+		}
+	}
+	a = append([]interface{}{functionName}, a...)
+	fmt.Fprintln(receiver.Output, a...)
+}
+
 func Log(a ...interface{}) {
 	Default.Log(a...)
 }
@@ -159,4 +172,8 @@ func Begin(a ...interface{}) {
 
 func End(a ...interface{}) {
 	Default.End(a...)
+}
+
+func OutputFn(a ...interface{}) {
+	Default.output(a...)
 }
