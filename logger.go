@@ -100,7 +100,7 @@ func (receiver Logger) Prefix(newprefix ...string) Logger {
 func (receiver Logger) output(a ...interface{}) {
 	var functionName string = ""
 	{
-		pc, _, _, ok := runtime.Caller(1)
+		pc, _, _, ok := runtime.Caller(2)
 		if ok {
 			fnc := runtime.FuncForPC(pc)
 			functionName = fnc.Name()

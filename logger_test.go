@@ -233,17 +233,17 @@ func TestLogger_Output(t *testing.T) {
 	}{
 		{
 			Input:    []interface{}{"test"},
-			Excepted: "github.com/mmcomp/go-log.TestLogger_Output test\n",
+			Excepted: "testing.tRunner test\n",
 		},
 
 		{
 			Input:    []interface{}{"sometimes", "it", "is", "best", "to", "listen"},
-			Excepted: "github.com/mmcomp/go-log.TestLogger_Output sometimes it is best to listen\n",
+			Excepted: "testing.tRunner sometimes it is best to listen\n",
 		},
 
 		{
 			Input:    []interface{}{"Hello", "!!"},
-			Excepted: "github.com/mmcomp/go-log.TestLogger_Output Hello !!\n",
+			Excepted: "testing.tRunner Hello !!\n",
 		},
 	}
 
