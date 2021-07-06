@@ -26,6 +26,7 @@ func (receiver Logger) Log(a ...interface{}) {
 	if receiver.Output == nil {
 		return
 	}
+	// TODO add to output
 	if receiver.Prfx != nil {
 		fmt.Fprint(receiver.Output, strings.Join(receiver.Prfx[:], ": "))
 		fmt.Fprintf(receiver.Output, ": ")
@@ -97,6 +98,7 @@ func (receiver Logger) Prefix(newprefix ...string) Logger {
 	return logger
 }
 
+// Note every method should use this
 func (receiver Logger) output(a ...interface{}) {
 	var functionName string = ""
 	{
@@ -115,6 +117,7 @@ func Log(a ...interface{}) {
 }
 
 func Alert(a ...interface{}) {
+	// TODO use alert method
 	Default.Log(a...)
 }
 
