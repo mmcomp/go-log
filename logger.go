@@ -80,7 +80,7 @@ func (receiver Logger) output(a ...interface{}) {
 	}
 	var functionName string = ""
 	{
-		pc, _, _, ok := runtime.Caller(2)
+		pc, _, _, ok := runtime.Caller(1)
 		if ok {
 			fnc := runtime.FuncForPC(pc)
 			functionName = fnc.Name()
