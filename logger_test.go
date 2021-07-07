@@ -6,7 +6,7 @@ import (
 )
 
 func TestLogger_Color(r *testing.T) {
-	Warn("%s Test Red %s %s")
+	Begin()
 }
 
 func TestLogger_Log(t *testing.T) {

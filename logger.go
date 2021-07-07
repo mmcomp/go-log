@@ -57,12 +57,12 @@ func (receiver Logger) Logf(format string, a ...interface{}) {
 
 func (receiver Logger) Begin(a ...interface{}) {
 	startTime = time.Now()
-	receiver.Log("BEGIN")
+	receiver.output("BEGIN")
 }
 
 func (receiver Logger) End(a ...interface{}) {
 	endTime = time.Now()
-	receiver.Log("END", endTime.Sub(startTime))
+	receiver.output("END", endTime.Sub(startTime))
 }
 
 func (receiver Logger) Prefix(newprefix ...string) Logger {
@@ -171,8 +171,4 @@ func Begin(a ...interface{}) {
 
 func End(a ...interface{}) {
 	Default.End(a...)
-}
-
-func OutputFn(a ...interface{}) {
-	Default.output(a...)
 }
