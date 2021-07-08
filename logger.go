@@ -102,24 +102,6 @@ func (receiver Logger) output(a ...interface{}) {
 			fnc := runtime.FuncForPC(pc)
 			functionName = fnc.Name()
 		}
-	}
-	a = append([]interface{}{functionName}, a...)
-	fmt.Fprintln(receiver.Output, a...)
-}
-
-func (receiver Logger) outputf(format string, a ...interface{}) {
-	if receiver.Prfx != nil {
-		var prefixStr string = strings.Join(receiver.Prfx[:], ": ") + ":"
-		a = append([]interface{}{prefixStr}, a...)
-	}
-	var functionName string = ""
-	{
-		pc, _, _, ok := runtime.Caller(0)
-		if ok {
-			fnc := runtime.FuncForPC(pc)
-			functionName = fnc.Name()
-			fmt.Println("0:", functionName)
-		}
 		pc, _, _, ok = runtime.Caller(1)
 		if ok {
 			fnc := runtime.FuncForPC(pc)
@@ -143,6 +125,24 @@ func (receiver Logger) outputf(format string, a ...interface{}) {
 			fnc := runtime.FuncForPC(pc)
 			functionName = fnc.Name()
 			fmt.Println("4:", functionName)
+		}
+	}
+	a = append([]interface{}{functionName}, a...)
+	fmt.Fprintln(receiver.Output, a...)
+}
+
+func (receiver Logger) outputf(format string, a ...interface{}) {
+	if receiver.Prfx != nil {
+		var prefixStr string = strings.Join(receiver.Prfx[:], ": ") + ":"
+		a = append([]interface{}{prefixStr}, a...)
+	}
+	var functionName string = ""
+	{
+		pc, _, _, ok := runtime.Caller(0)
+		if ok {
+			fnc := runtime.FuncForPC(pc)
+			functionName = fnc.Name()
+			fmt.Println("0:", functionName)
 		}
 	}
 	a = append([]interface{}{functionName}, a...)
