@@ -97,34 +97,24 @@ func (receiver Logger) output(a ...interface{}) {
 	}
 	var functionName string = ""
 	{
-		pc, _, _, ok := runtime.Caller(1)
-		if ok {
-			fnc := runtime.FuncForPC(pc)
-			functionName = fnc.Name()
-		}
-		pc, _, _, ok = runtime.Caller(1)
-		if ok {
-			fnc := runtime.FuncForPC(pc)
-			functionName = fnc.Name()
-			fmt.Println("1:", functionName)
-		}
-		pc, _, _, ok = runtime.Caller(2)
-		if ok {
-			fnc := runtime.FuncForPC(pc)
-			functionName = fnc.Name()
-			fmt.Println("2:", functionName)
-		}
-		pc, _, _, ok = runtime.Caller(3)
-		if ok {
-			fnc := runtime.FuncForPC(pc)
-			functionName = fnc.Name()
-			fmt.Println("3:", functionName)
-		}
-		pc, _, _, ok = runtime.Caller(4)
-		if ok {
-			fnc := runtime.FuncForPC(pc)
-			functionName = fnc.Name()
-			fmt.Println("4:", functionName)
+		var pc uintptr
+		var ok bool = true
+		var found bool = false
+		skip := 0
+		for !found && ok {
+			pc, _, _, ok = runtime.Caller(skip)
+			if ok {
+				fnc := runtime.FuncForPC(pc)
+				foundedFunctionName := fnc.Name()
+				if strings.Index(foundedFunctionName, "go-log") < 0 {
+					functionName = foundedFunctionName
+					found = true
+				}
+			}
+			skip++
+			if skip > 100 {
+				found = true
+			}
 		}
 	}
 	a = append([]interface{}{functionName}, a...)
@@ -138,11 +128,24 @@ func (receiver Logger) outputf(format string, a ...interface{}) {
 	}
 	var functionName string = ""
 	{
-		pc, _, _, ok := runtime.Caller(0)
-		if ok {
-			fnc := runtime.FuncForPC(pc)
-			functionName = fnc.Name()
-			fmt.Println("0:", functionName)
+		var pc uintptr
+		var ok bool = true
+		var found bool = false
+		skip := 0
+		for !found && ok {
+			pc, _, _, ok = runtime.Caller(skip)
+			if ok {
+				fnc := runtime.FuncForPC(pc)
+				foundedFunctionName := fnc.Name()
+				if strings.Index(foundedFunctionName, "go-log") < 0 {
+					functionName = foundedFunctionName
+					found = true
+				}
+			}
+			skip++
+			if skip > 100 {
+				found = true
+			}
 		}
 	}
 	a = append([]interface{}{functionName}, a...)

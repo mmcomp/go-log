@@ -5,10 +5,6 @@ import (
 	"testing"
 )
 
-func TestLogger_Color(r *testing.T) {
-	Begin()
-}
-
 func TestLogger_Log(t *testing.T) {
 	var b bytes.Buffer
 	logger := Logger{
@@ -21,17 +17,17 @@ func TestLogger_Log(t *testing.T) {
 	}{
 		{
 			Input:    []interface{}{"test"},
-			Excepted: "github.com/mmcomp/go-log.TestLogger_Log test\n",
+			Excepted: "testing.tRunner test\n",
 		},
 
 		{
 			Input:    []interface{}{"sometimes", "it", "is", "best", "to", "listen"},
-			Excepted: "github.com/mmcomp/go-log.TestLogger_Log sometimes it is best to listen\n",
+			Excepted: "testing.tRunner sometimes it is best to listen\n",
 		},
 
 		{
 			Input:    []interface{}{"Hello", "!!"},
-			Excepted: "github.com/mmcomp/go-log.TestLogger_Log Hello !!\n",
+			Excepted: "testing.tRunner Hello !!\n",
 		},
 	}
 
@@ -58,19 +54,19 @@ func TestLogger_Logf(t *testing.T) {
 	}{
 		{
 			Input:    []interface{}{"test"},
-			Excepted: "github.com/mmcomp/go-log.TestLogger_Logf test \n",
+			Excepted: "testing.tRunner test \n",
 			Format:   "%s %s %s",
 		},
 
 		{
 			Input:    []interface{}{"sometimes", "it", "is", "best", "to", "listen"},
-			Excepted: "github.com/mmcomp/go-log.TestLogger_Logf sometimes it is best to listen \n",
+			Excepted: "testing.tRunner sometimes it is best to listen \n",
 			Format:   "%s %s %s %s %s %s %s %s",
 		},
 
 		{
 			Input:    []interface{}{"Hello", "!!"},
-			Excepted: "github.com/mmcomp/go-log.TestLogger_Logf Hello !! \n",
+			Excepted: "testing.tRunner Hello !! \n",
 			Format:   "%s %s %s %s",
 		},
 	}
@@ -94,25 +90,25 @@ func TestLogger_Prefix_Log(t *testing.T) {
 	}{
 		{
 			Input:    []interface{}{"test"},
-			Excepted: "github.com/mmcomp/go-log.TestLogger_Prefix_Log Pr1: Pr2: test\n",
+			Excepted: "testing.tRunner Pr1: Pr2: test\n",
 			Prefixes: []string{"Pr1", "Pr2"},
 		},
 
 		{
 			Input:    []interface{}{"The", "test"},
-			Excepted: "github.com/mmcomp/go-log.TestLogger_Prefix_Log Pr1: The test\n",
+			Excepted: "testing.tRunner Pr1: The test\n",
 			Prefixes: []string{"Pr1"},
 		},
 
 		{
 			Input:    []interface{}{"sometimes", "it", "is", "best", "to", "listen"},
-			Excepted: "github.com/mmcomp/go-log.TestLogger_Prefix_Log Pr1: Pr2: sometimes it is best to listen\n",
+			Excepted: "testing.tRunner Pr1: Pr2: sometimes it is best to listen\n",
 			Prefixes: []string{"Pr1", "Pr2"},
 		},
 
 		{
 			Input:    []interface{}{"Hello", "!!"},
-			Excepted: "github.com/mmcomp/go-log.TestLogger_Prefix_Log Pr1: Hello !!\n",
+			Excepted: "testing.tRunner Pr1: Hello !!\n",
 			Prefixes: []string{"Pr1"},
 		},
 	}
@@ -139,28 +135,28 @@ func TestLogger_Prefix_Logf(t *testing.T) {
 	}{
 		{
 			Input:    []interface{}{"test"},
-			Excepted: "github.com/mmcomp/go-log.TestLogger_Prefix_Logf Pr1: Pr2: test \n",
+			Excepted: "testing.tRunner Pr1: Pr2: test \n",
 			Prefixes: []string{"Pr1", "Pr2"},
 			Format:   "%s %s %s %s",
 		},
 
 		{
 			Input:    []interface{}{"The", "test"},
-			Excepted: "github.com/mmcomp/go-log.TestLogger_Prefix_Logf Pr1: The test \n",
+			Excepted: "testing.tRunner Pr1: The test \n",
 			Prefixes: []string{"Pr1"},
 			Format:   "%s %s %s %s %s",
 		},
 
 		{
 			Input:    []interface{}{"sometimes", "it", "is", "best", "to", "listen"},
-			Excepted: "github.com/mmcomp/go-log.TestLogger_Prefix_Logf Pr1: Pr2: sometimes it is best to listen \n",
+			Excepted: "testing.tRunner Pr1: Pr2: sometimes it is best to listen \n",
 			Prefixes: []string{"Pr1", "Pr2"},
 			Format:   "%s %s %s %s %s %s %s %s %s",
 		},
 
 		{
 			Input:    []interface{}{"Hello", "!!"},
-			Excepted: "github.com/mmcomp/go-log.TestLogger_Prefix_Logf Pr1: Hello !! \n",
+			Excepted: "testing.tRunner Pr1: Hello !! \n",
 			Prefixes: []string{"Pr1"},
 			Format:   "%s %s %s %s %s",
 		},
