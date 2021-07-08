@@ -18,12 +18,29 @@ var (
 	Magenta = Color("\033[1;35m%s\033[0m")
 	Teal    = Color("\033[1;36m%s\033[0m")
 	White   = Color("\033[1;37m%s\033[0m")
+
+	Blackf   = Colorf("\033[1;30m%s\033[0m")
+	Redf     = Colorf("\033[1;31m%s\033[0m")
+	Greenf   = Colorf("\033[1;32m%s\033[0m")
+	Yellowf  = Colorf("\033[1;33m%s\033[0m")
+	Purplef  = Colorf("\033[1;34m%s\033[0m")
+	Magentaf = Colorf("\033[1;35m%s\033[0m")
+	Tealf    = Colorf("\033[1;36m%s\033[0m")
+	Whitef   = Colorf("\033[1;37m%s\033[0m")
 )
 
 func Color(colorString string) func(...interface{}) string {
 	sprint := func(args ...interface{}) string {
 		return fmt.Sprintf(colorString,
 			fmt.Sprint(args...))
+	}
+	return sprint
+}
+
+func Colorf(colorString string) func(string, ...interface{}) string {
+	sprint := func(format string, args ...interface{}) string {
+		return fmt.Sprintf(colorString,
+			fmt.Sprintf(format, args...))
 	}
 	return sprint
 }
@@ -97,10 +114,35 @@ func (receiver Logger) outputf(format string, a ...interface{}) {
 	}
 	var functionName string = ""
 	{
-		pc, _, _, ok := runtime.Caller(2)
+		pc, _, _, ok := runtime.Caller(0)
 		if ok {
 			fnc := runtime.FuncForPC(pc)
 			functionName = fnc.Name()
+			fmt.Println("0:", functionName)
+		}
+		pc, _, _, ok = runtime.Caller(1)
+		if ok {
+			fnc := runtime.FuncForPC(pc)
+			functionName = fnc.Name()
+			fmt.Println("1:", functionName)
+		}
+		pc, _, _, ok = runtime.Caller(2)
+		if ok {
+			fnc := runtime.FuncForPC(pc)
+			functionName = fnc.Name()
+			fmt.Println("2:", functionName)
+		}
+		pc, _, _, ok = runtime.Caller(3)
+		if ok {
+			fnc := runtime.FuncForPC(pc)
+			functionName = fnc.Name()
+			fmt.Println("3:", functionName)
+		}
+		pc, _, _, ok = runtime.Caller(4)
+		if ok {
+			fnc := runtime.FuncForPC(pc)
+			functionName = fnc.Name()
+			fmt.Println("4:", functionName)
 		}
 	}
 	a = append([]interface{}{functionName}, a...)
@@ -142,19 +184,19 @@ func Logf(format string, a ...interface{}) {
 }
 
 func Alertf(format string, a ...interface{}) {
-	Default.Logf(format, Green(a...))
+	Default.Logf(Greenf(format, a...))
 }
 
 func Errorf(format string, a ...interface{}) {
-	Default.Logf(format, Red(a...))
+	Default.Logf(Redf(format, a...))
 }
 
 func Highlightf(format string, a ...interface{}) {
-	Default.Logf(format, Teal(a...))
+	Default.Logf(Tealf(format, a...))
 }
 
 func Informf(format string, a ...interface{}) {
-	Default.Logf(format, Magenta(a...))
+	Default.Logf(Magentaf(format, a...))
 }
 
 func Tracef(format string, a ...interface{}) {
@@ -162,7 +204,7 @@ func Tracef(format string, a ...interface{}) {
 }
 
 func Warnf(format string, a ...interface{}) {
-	Default.Logf(format, Yellow(a...))
+	Default.Logf(Yellowf(format, a...))
 }
 
 func Begin(a ...interface{}) {
