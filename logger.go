@@ -97,10 +97,24 @@ func (receiver Logger) output(a ...interface{}) {
 	}
 	var functionName string = ""
 	{
-		pc, _, _, ok := runtime.Caller(1)
-		if ok {
-			fnc := runtime.FuncForPC(pc)
-			functionName = fnc.Name()
+		var pc uintptr
+		var ok bool = true
+		var found bool = false
+		skip := 0
+		for !found && ok {
+			pc, _, _, ok = runtime.Caller(skip)
+			if ok {
+				fnc := runtime.FuncForPC(pc)
+				foundedFunctionName := fnc.Name()
+				if !strings.Contains(foundedFunctionName, "go-log") {
+					functionName = foundedFunctionName
+					found = true
+				}
+			}
+			skip++
+			if skip > 100 {
+				found = true
+			}
 		}
 	}
 	a = append([]interface{}{functionName}, a...)
@@ -110,17 +124,33 @@ func (receiver Logger) output(a ...interface{}) {
 func (receiver Logger) outputf(format string, a ...interface{}) {
 	var prefix strings.Builder
 	{
-		pc, _, _, ok := runtime.Caller(2)
-		if ok {
-			var functionName string = ""
-			fnc := runtime.FuncForPC(pc)
-			functionName = fnc.Name()
+		var pc uintptr
+		var ok bool = true
+		var found bool = false
+		skip := 0
+		var functionName string = ""
+		for !found && ok {
+			pc, _, _, ok = runtime.Caller(skip)
+			if ok {
+				fnc := runtime.FuncForPC(pc)
+				foundedFunctionName := fnc.Name()
+				if !strings.Contains(foundedFunctionName, "go-log") {
+					functionName = foundedFunctionName
+					found = true
+				}
+			}
+			skip++
+			if skip > 100 {
+				found = true
+			}
+		}
+		if functionName != "" {
 			prefix.WriteString(functionName)
 			prefix.WriteString(": ")
 		}
 	}
 	if receiver.Prfx != nil {
-		var prefixStr string = strings.Join(receiver.Prfx[:], ": ") + ":"
+		var prefixStr string = strings.Join(receiver.Prfx[:], ": ") + ": "
 		prefix.WriteString(prefixStr)
 	}
 	format = fmt.Sprintf("%s%s%s", prefix.String(), format, "\n")
