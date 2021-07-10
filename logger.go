@@ -10,20 +10,37 @@ import (
 )
 
 var (
-	Black   = Color("\033[1;30m%s\033[0m")
-	Red     = Color("\033[1;31m%s\033[0m")
-	Green   = Color("\033[1;32m%s\033[0m")
-	Yellow  = Color("\033[1;33m%s\033[0m")
-	Purple  = Color("\033[1;34m%s\033[0m")
-	Magenta = Color("\033[1;35m%s\033[0m")
-	Teal    = Color("\033[1;36m%s\033[0m")
-	White   = Color("\033[1;37m%s\033[0m")
+	Black   = color("\033[1;30m%s\033[0m")
+	Red     = color("\033[1;31m%s\033[0m")
+	Green   = color("\033[1;32m%s\033[0m")
+	Yellow  = color("\033[1;33m%s\033[0m")
+	Purple  = color("\033[1;34m%s\033[0m")
+	Magenta = color("\033[1;35m%s\033[0m")
+	Teal    = color("\033[1;36m%s\033[0m")
+	White   = color("\033[1;37m%s\033[0m")
+
+	Blackf   = colorf("\033[1;30m%s\033[0m")
+	Redf     = colorf("\033[1;31m%s\033[0m")
+	Greenf   = colorf("\033[1;32m%s\033[0m")
+	Yellowf  = colorf("\033[1;33m%s\033[0m")
+	Purplef  = colorf("\033[1;34m%s\033[0m")
+	Magentaf = colorf("\033[1;35m%s\033[0m")
+	Tealf    = colorf("\033[1;36m%s\033[0m")
+	Whitef   = colorf("\033[1;37m%s\033[0m")
 )
 
-func Color(colorString string) func(...interface{}) string {
+func color(colorString string) func(...interface{}) string {
 	sprint := func(args ...interface{}) string {
 		return fmt.Sprintf(colorString,
 			fmt.Sprint(args...))
+	}
+	return sprint
+}
+
+func colorf(colorString string) func(string, ...interface{}) string {
+	sprint := func(format string, args ...interface{}) string {
+		return fmt.Sprintf(colorString,
+			fmt.Sprintf(format, args...))
 	}
 	return sprint
 }
@@ -91,20 +108,22 @@ func (receiver Logger) output(a ...interface{}) {
 }
 
 func (receiver Logger) outputf(format string, a ...interface{}) {
-	if receiver.Prfx != nil {
-		var prefixStr string = strings.Join(receiver.Prfx[:], ": ") + ":"
-		a = append([]interface{}{prefixStr}, a...)
-	}
-	var functionName string = ""
+	var prefix strings.Builder
 	{
 		pc, _, _, ok := runtime.Caller(2)
 		if ok {
+			var functionName string = ""
 			fnc := runtime.FuncForPC(pc)
 			functionName = fnc.Name()
+			prefix.WriteString(functionName)
+			prefix.WriteString(": ")
 		}
 	}
-	a = append([]interface{}{functionName}, a...)
-	a = append(a, "\n")
+	if receiver.Prfx != nil {
+		var prefixStr string = strings.Join(receiver.Prfx[:], ": ") + ":"
+		prefix.WriteString(prefixStr)
+	}
+	format = fmt.Sprintf("%s%s%s", prefix.String(), format, "\n")
 	fmt.Fprintf(receiver.Output, format, a...)
 }
 
@@ -142,19 +161,19 @@ func Logf(format string, a ...interface{}) {
 }
 
 func Alertf(format string, a ...interface{}) {
-	Default.Logf(format, Green(a...))
+	Default.Logf(Greenf(format, a...))
 }
 
 func Errorf(format string, a ...interface{}) {
-	Default.Logf(format, Red(a...))
+	Default.Logf(Redf(format, a...))
 }
 
 func Highlightf(format string, a ...interface{}) {
-	Default.Logf(format, Teal(a...))
+	Default.Logf(Tealf(format, a...))
 }
 
 func Informf(format string, a ...interface{}) {
-	Default.Logf(format, Magenta(a...))
+	Default.Logf(Magentaf(format, a...))
 }
 
 func Tracef(format string, a ...interface{}) {
@@ -162,7 +181,7 @@ func Tracef(format string, a ...interface{}) {
 }
 
 func Warnf(format string, a ...interface{}) {
-	Default.Logf(format, Yellow(a...))
+	Default.Logf(Yellowf(format, a...))
 }
 
 func Begin(a ...interface{}) {
