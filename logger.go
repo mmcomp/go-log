@@ -214,7 +214,7 @@ func Warnf(format string, a ...interface{}) {
 	Default.logf(Yellowf(format, a...))
 }
 
-func Begin(a ...interface{}) Logger {
+func Begin(a ...interface{}) (Logger) {
 	Default.begin(a...)
 	return Default
 }
