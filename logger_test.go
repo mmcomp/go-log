@@ -172,8 +172,3 @@ func TestLogger_Prefix_Logf(t *testing.T) {
 		b.Reset()
 	}
 }
-
-func TestLogger_Begin(t *testing.T) {
-	logger := Begin()
-	defer logger.end()
-}
