@@ -32,7 +32,7 @@ func TestLogger_Log(t *testing.T) {
 	}
 
 	for testNumber, test := range tests {
-		logger.Log(test.Input...)
+		logger.log(test.Input...)
 		out := b.String()
 		if out != test.Excepted {
 			t.Errorf("Test %d :  %q was expected but got %q", testNumber, test.Excepted, out)
@@ -72,7 +72,7 @@ func TestLogger_Logf(t *testing.T) {
 	}
 
 	for testNumber, test := range tests {
-		logger.Logf(test.Format, test.Input...)
+		logger.logf(test.Format, test.Input...)
 		out := b.String()
 		if out != test.Excepted {
 			t.Errorf("Test %d :  %q was expected but got %q", testNumber, test.Excepted, out)
@@ -114,9 +114,9 @@ func TestLogger_Prefix_Log(t *testing.T) {
 	}
 
 	for testNumber, test := range tests {
-		logger := Default.Prefix(test.Prefixes...)
+		logger := Default.prefix(test.Prefixes...)
 		logger.Output = &b
-		logger.Log(test.Input...)
+		logger.log(test.Input...)
 		out := b.String()
 		if out != test.Excepted {
 			t.Errorf("Test %d :  %q was expected but got %q", testNumber, test.Excepted, out)
@@ -162,9 +162,9 @@ func TestLogger_Prefix_Logf(t *testing.T) {
 		},
 	}
 	for testNumber, test := range tests {
-		logger := Default.Prefix(test.Prefixes...)
+		logger := Default.prefix(test.Prefixes...)
 		logger.Output = &b
-		logger.Logf(test.Format, test.Input...)
+		logger.logf(test.Format, test.Input...)
 		out := b.String()
 		if out != test.Excepted {
 			t.Errorf("Test %d :  %q was expected but got %q", testNumber, test.Excepted, out)

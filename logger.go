@@ -58,31 +58,31 @@ var Default Logger = Logger{
 var startTime time.Time
 var endTime time.Time
 
-func (receiver Logger) Log(a ...interface{}) {
+func (receiver Logger) log(a ...interface{}) {
 	if receiver.Output == nil {
 		return
 	}
 	receiver.output(a...)
 }
 
-func (receiver Logger) Logf(format string, a ...interface{}) {
+func (receiver Logger) logf(format string, a ...interface{}) {
 	if receiver.Output == nil {
 		return
 	}
 	receiver.outputf(format, a...)
 }
 
-func (receiver Logger) Begin(a ...interface{}) {
+func (receiver Logger) begin(a ...interface{}) {
 	startTime = time.Now()
 	receiver.output("BEGIN")
 }
 
-func (receiver Logger) End(a ...interface{}) {
+func (receiver Logger) end(a ...interface{}) {
 	endTime = time.Now()
 	receiver.output("END", endTime.Sub(startTime))
 }
 
-func (receiver Logger) Prefix(newprefix ...string) Logger {
+func (receiver Logger) prefix(newprefix ...string) Logger {
 	logger := Logger{
 		Prfx:   newprefix,
 		Output: Default.Output,
@@ -158,67 +158,67 @@ func (receiver Logger) outputf(format string, a ...interface{}) {
 }
 
 func Log(a ...interface{}) {
-	Default.Log(a...)
+	Default.log(a...)
 }
 
 func Alert(a ...interface{}) {
 	// TODO use alert method
-	Default.Log(Green(a...))
+	Default.log(Green(a...))
 }
 
 func Error(a ...interface{}) {
-	Default.Log(Red(a...))
+	Default.log(Red(a...))
 }
 
 func Highlight(a ...interface{}) {
-	Default.Log(Teal(a...))
+	Default.log(Teal(a...))
 }
 
 func Inform(a ...interface{}) {
-	Default.Log(Magenta(a...))
+	Default.log(Magenta(a...))
 }
 
 func Trace(a ...interface{}) {
-	Default.Log(a...)
+	Default.log(a...)
 }
 
 func Warn(a ...interface{}) {
-	Default.Log(Yellow(a...))
+	Default.log(Yellow(a...))
 }
 
 func Logf(format string, a ...interface{}) {
-	Default.Logf(format, a...)
+	Default.logf(format, a...)
 }
 
 func Alertf(format string, a ...interface{}) {
-	Default.Logf(Greenf(format, a...))
+	Default.logf(Greenf(format, a...))
 }
 
 func Errorf(format string, a ...interface{}) {
-	Default.Logf(Redf(format, a...))
+	Default.logf(Redf(format, a...))
 }
 
 func Highlightf(format string, a ...interface{}) {
-	Default.Logf(Tealf(format, a...))
+	Default.logf(Tealf(format, a...))
 }
 
 func Informf(format string, a ...interface{}) {
-	Default.Logf(Magentaf(format, a...))
+	Default.logf(Magentaf(format, a...))
 }
 
 func Tracef(format string, a ...interface{}) {
-	Default.Logf(format, a...)
+	Default.logf(format, a...)
 }
 
 func Warnf(format string, a ...interface{}) {
-	Default.Logf(Yellowf(format, a...))
+	Default.logf(Yellowf(format, a...))
 }
 
 func Begin(a ...interface{}) Logger {
-	Default.Begin(a...)
+	Default.begin(a...)
 	return Default
 }
 
 func End(a ...interface{}) {
-	Default.End(a...)
+	Default.end(a...)
 }
