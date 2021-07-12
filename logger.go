@@ -215,6 +215,7 @@ func Warnf(format string, a ...interface{}) {
 }
 
 func Begin(a ...interface{}) (Logger) {
+	Default.log("Beginig!")
 	Default.begin(a...)
 	return Default
 }
