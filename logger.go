@@ -46,53 +46,103 @@ func colorf(colorString string) func(string, ...interface{}) string {
 }
 
 type Logger struct {
-	Output io.Writer
-	Prfx   []string
+	Output    io.Writer
+	prfx      []string
+	startTime time.Time
 }
 
 var Default Logger = Logger{
-	Output: os.Stdout,
-	Prfx:   nil,
+	Output:    os.Stdout,
+	prfx:      nil,
+	startTime: time.Now(),
 }
 
 var startTime time.Time
 var endTime time.Time
 
-func (receiver Logger) log(a ...interface{}) {
+func (receiver Logger) Log(a ...interface{}) {
 	if receiver.Output == nil {
 		return
 	}
 	receiver.output(a...)
 }
 
-func (receiver Logger) logf(format string, a ...interface{}) {
+func (receiver Logger) Logf(format string, a ...interface{}) {
 	if receiver.Output == nil {
 		return
 	}
 	receiver.outputf(format, a...)
 }
 
-func (receiver Logger) begin(a ...interface{}) {
+func (receiver Logger) Begin(a ...interface{}) Logger {
 	startTime = time.Now()
 	receiver.output("BEGIN")
+	logger := Logger{
+		Output:    receiver.Output,
+		prfx:      receiver.prfx,
+		startTime: startTime,
+	}
+	return logger
 }
 
-func (receiver Logger) end(a ...interface{}) {
+func (receiver Logger) End(a ...interface{}) {
 	endTime = time.Now()
 	receiver.output("END", endTime.Sub(startTime))
 }
 
-func (receiver Logger) prefix(newprefix ...string) Logger {
+func (receiver Logger) Prefix(newprefix ...string) Logger {
 	logger := Logger{
-		Prfx:   newprefix,
+		prfx:   newprefix,
 		Output: Default.Output,
 	}
 	return logger
 }
 
+func (receiver Logger) Alert(a ...interface{}) {
+	if receiver.Output == nil {
+		return
+	}
+	receiver.output(Green(a...))
+}
+
+func (receiver Logger) Error(a ...interface{}) {
+	if receiver.Output == nil {
+		return
+	}
+	receiver.output(Red(a...))
+}
+
+func (receiver Logger) Highlight(a ...interface{}) {
+	if receiver.Output == nil {
+		return
+	}
+	receiver.output(Teal(a...))
+}
+
+func (receiver Logger) Inform(a ...interface{}) {
+	if receiver.Output == nil {
+		return
+	}
+	receiver.output(Magenta(a...))
+}
+
+func (receiver Logger) Trace(a ...interface{}) {
+	if receiver.Output == nil {
+		return
+	}
+	receiver.output(a...)
+}
+
+func (receiver Logger) Warn(a ...interface{}) {
+	if receiver.Output == nil {
+		return
+	}
+	receiver.output(Yellow(a...))
+}
+
 func (receiver Logger) output(a ...interface{}) {
-	if receiver.Prfx != nil {
-		var prefixStr string = strings.Join(receiver.Prfx[:], ": ") + ":"
+	if receiver.prfx != nil {
+		var prefixStr string = strings.Join(receiver.prfx[:], ": ") + ":"
 		a = append([]interface{}{prefixStr}, a...)
 	}
 	var functionName string = ""
@@ -149,75 +199,116 @@ func (receiver Logger) outputf(format string, a ...interface{}) {
 			prefix.WriteString(": ")
 		}
 	}
-	if receiver.Prfx != nil {
-		var prefixStr string = strings.Join(receiver.Prfx[:], ": ") + ": "
+	if receiver.prfx != nil {
+		var prefixStr string = strings.Join(receiver.prfx[:], ": ") + ": "
 		prefix.WriteString(prefixStr)
 	}
 	format = fmt.Sprintf("%s%s%s", prefix.String(), format, "\n")
 	fmt.Fprintf(receiver.Output, format, a...)
 }
 
+func (receiver Logger) Alertf(format string, a ...interface{}) {
+	if receiver.Output == nil {
+		return
+	}
+	receiver.outputf(Greenf(format, a...))
+}
+
+func (receiver Logger) Errorf(format string, a ...interface{}) {
+	if receiver.Output == nil {
+		return
+	}
+	receiver.outputf(Redf(format, a...))
+}
+
+func (receiver Logger) Highlightf(format string, a ...interface{}) {
+	if receiver.Output == nil {
+		return
+	}
+	receiver.outputf(Tealf(format, a...))
+}
+
+func (receiver Logger) Informf(format string, a ...interface{}) {
+	if receiver.Output == nil {
+		return
+	}
+	receiver.outputf(Magentaf(format, a...))
+}
+
+func (receiver Logger) Tracef(format string, a ...interface{}) {
+	if receiver.Output == nil {
+		return
+	}
+	receiver.outputf(format, a...)
+}
+
+func (receiver Logger) Warnf(format string, a ...interface{}) {
+	if receiver.Output == nil {
+		return
+	}
+	receiver.outputf(Yellowf(format, a...))
+}
+
 func Log(a ...interface{}) {
-	Default.log(a...)
+	Default.Log(a...)
 }
 
 func Alert(a ...interface{}) {
-	// TODO use alert method
-	Default.log(Green(a...))
+	Default.Alert(a...)
 }
 
 func Error(a ...interface{}) {
-	Default.log(Red(a...))
+	Default.Error(a...)
 }
 
 func Highlight(a ...interface{}) {
-	Default.log(Teal(a...))
+	Default.Highlight(a...)
 }
 
 func Inform(a ...interface{}) {
-	Default.log(Magenta(a...))
+	Default.Inform(a...)
 }
 
 func Trace(a ...interface{}) {
-	Default.log(a...)
+	Default.Trace(a...)
 }
 
 func Warn(a ...interface{}) {
-	Default.log(Yellow(a...))
+	Default.Warn(a...)
 }
 
 func Logf(format string, a ...interface{}) {
-	Default.logf(format, a...)
+	Default.Logf(format, a...)
 }
 
 func Alertf(format string, a ...interface{}) {
-	Default.logf(Greenf(format, a...))
+	Default.Alertf(format, a...)
 }
 
 func Errorf(format string, a ...interface{}) {
-	Default.logf(Redf(format, a...))
+	Default.Errorf(format, a...)
 }
 
 func Highlightf(format string, a ...interface{}) {
-	Default.logf(Tealf(format, a...))
+	Default.Highlightf(format, a...)
 }
 
 func Informf(format string, a ...interface{}) {
-	Default.logf(Magentaf(format, a...))
+	Default.Informf(format, a...)
 }
 
 func Tracef(format string, a ...interface{}) {
-	Default.logf(format, a...)
+	Default.Tracef(format, a...)
 }
 
 func Warnf(format string, a ...interface{}) {
-	Default.logf(Yellowf(format, a...))
+	Default.Warnf(format, a...)
 }
 
-func Begin(a ...interface{}) {
-	Default.begin(a...)
+func Begin(a ...interface{}) Logger {
+	return Default.Begin(a...)
 }
 
 func End(a ...interface{}) {
-	Default.end(a...)
+	Default.End(a...)
 }
