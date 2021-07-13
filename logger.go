@@ -57,9 +57,6 @@ var Default Logger = Logger{
 	startTime: time.Now(),
 }
 
-var startTime time.Time
-var endTime time.Time
-
 func (receiver Logger) Log(a ...interface{}) {
 	if receiver.Output == nil {
 		return
@@ -75,19 +72,19 @@ func (receiver Logger) Logf(format string, a ...interface{}) {
 }
 
 func (receiver Logger) Begin(a ...interface{}) Logger {
-	startTime = time.Now()
+	receiver.startTime = time.Now()
 	receiver.output("BEGIN")
 	logger := Logger{
 		Output:    receiver.Output,
 		prfx:      receiver.prfx,
-		startTime: startTime,
+		startTime: receiver.startTime,
 	}
 	return logger
 }
 
 func (receiver Logger) End(a ...interface{}) {
-	endTime = time.Now()
-	receiver.output("END", endTime.Sub(startTime))
+	endTime := time.Now()
+	receiver.output("END", endTime.Sub(receiver.startTime))
 }
 
 func (receiver Logger) Prefix(newprefix ...string) Logger {
