@@ -49,23 +49,25 @@ type Logger struct {
 	Output    io.Writer
 	prfx      []string
 	startTime time.Time
+	level     uint64
 }
 
 var Default Logger = Logger{
 	Output:    os.Stdout,
 	prfx:      nil,
 	startTime: time.Now(),
+	level:     0,
 }
 
 func (receiver Logger) Log(a ...interface{}) {
-	if receiver.Output == nil {
+	if receiver.Output == nil || receiver.level < 5 {
 		return
 	}
 	receiver.output(a...)
 }
 
 func (receiver Logger) Logf(format string, a ...interface{}) {
-	if receiver.Output == nil {
+	if receiver.Output == nil || receiver.level < 5 {
 		return
 	}
 	receiver.outputf(format, a...)
@@ -96,42 +98,42 @@ func (receiver Logger) Prefix(newprefix ...string) Logger {
 }
 
 func (receiver Logger) Alert(a ...interface{}) {
-	if receiver.Output == nil {
+	if receiver.Output == nil || receiver.level < 1 {
 		return
 	}
 	receiver.output(Green(a...))
 }
 
 func (receiver Logger) Error(a ...interface{}) {
-	if receiver.Output == nil {
+	if receiver.Output == nil || receiver.level < 1 {
 		return
 	}
 	receiver.output(Red(a...))
 }
 
 func (receiver Logger) Highlight(a ...interface{}) {
-	if receiver.Output == nil {
+	if receiver.Output == nil || receiver.level < 3 {
 		return
 	}
 	receiver.output(Teal(a...))
 }
 
 func (receiver Logger) Inform(a ...interface{}) {
-	if receiver.Output == nil {
+	if receiver.Output == nil || receiver.level < 4 {
 		return
 	}
 	receiver.output(Magenta(a...))
 }
 
 func (receiver Logger) Trace(a ...interface{}) {
-	if receiver.Output == nil {
+	if receiver.Output == nil || receiver.level < 6 {
 		return
 	}
 	receiver.output(a...)
 }
 
 func (receiver Logger) Warn(a ...interface{}) {
-	if receiver.Output == nil {
+	if receiver.Output == nil || receiver.level < 2 {
 		return
 	}
 	receiver.output(Yellow(a...))
@@ -205,45 +207,56 @@ func (receiver Logger) outputf(format string, a ...interface{}) {
 }
 
 func (receiver Logger) Alertf(format string, a ...interface{}) {
-	if receiver.Output == nil {
+	if receiver.Output == nil || receiver.level < 1 {
 		return
 	}
 	receiver.outputf(Greenf(format, a...))
 }
 
 func (receiver Logger) Errorf(format string, a ...interface{}) {
-	if receiver.Output == nil {
+	if receiver.Output == nil || receiver.level < 1 {
 		return
 	}
 	receiver.outputf(Redf(format, a...))
 }
 
 func (receiver Logger) Highlightf(format string, a ...interface{}) {
-	if receiver.Output == nil {
+	if receiver.Output == nil || receiver.level < 3 {
 		return
 	}
 	receiver.outputf(Tealf(format, a...))
 }
 
 func (receiver Logger) Informf(format string, a ...interface{}) {
-	if receiver.Output == nil {
+	if receiver.Output == nil || receiver.level < 4 {
 		return
 	}
 	receiver.outputf(Magentaf(format, a...))
 }
 
 func (receiver Logger) Tracef(format string, a ...interface{}) {
-	if receiver.Output == nil {
+	if receiver.Output == nil || receiver.level < 6 {
 		return
 	}
 	receiver.outputf(format, a...)
 }
 
 func (receiver Logger) Warnf(format string, a ...interface{}) {
-	if receiver.Output == nil {
+	if receiver.Output == nil || receiver.level < 2 {
 		return
 	}
 	receiver.outputf(Yellowf(format, a...))
+}
+
+func (receiver Logger) Level(level uint64) Logger {
+	receiver.startTime = time.Now()
+	logger := Logger{
+		Output:    receiver.Output,
+		prfx:      receiver.prfx,
+		startTime: receiver.startTime,
+		level:     level,
+	}
+	return logger
 }
 
 func Log(a ...interface{}) {
@@ -308,4 +321,8 @@ func Begin(a ...interface{}) Logger {
 
 func End(a ...interface{}) {
 	Default.End(a...)
+}
+
+func Level(level uint64) Logger {
+	return Default.Level(level)
 }

@@ -10,6 +10,7 @@ func TestLogger_Log(t *testing.T) {
 	logger := Logger{
 		Output: &b,
 	}
+	logger = logger.Level(5)
 
 	tests := []struct {
 		Input    []interface{}
@@ -46,6 +47,7 @@ func TestLogger_Logf(t *testing.T) {
 	logger := Logger{
 		Output: &b,
 	}
+	logger = logger.Level(5)
 
 	tests := []struct {
 		Input    []interface{}
@@ -116,6 +118,7 @@ func TestLogger_Prefix_Log(t *testing.T) {
 	for testNumber, test := range tests {
 		logger := Default.Prefix(test.Prefixes...)
 		logger.Output = &b
+		logger = logger.Level(5)
 		logger.Log(test.Input...)
 		out := b.String()
 		if out != test.Excepted {
@@ -164,6 +167,7 @@ func TestLogger_Prefix_Logf(t *testing.T) {
 	for testNumber, test := range tests {
 		logger := Default.Prefix(test.Prefixes...)
 		logger.Output = &b
+		logger = logger.Level(5)
 		logger.Logf(test.Format, test.Input...)
 		out := b.String()
 		if out != test.Excepted {
