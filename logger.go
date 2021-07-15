@@ -80,6 +80,7 @@ func (receiver Logger) Begin(a ...interface{}) Logger {
 		Output:    receiver.Output,
 		prfx:      receiver.prfx,
 		startTime: receiver.startTime,
+		level:     receiver.level,
 	}
 	return logger
 }
